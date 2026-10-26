@@ -1,0 +1,114 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EQ 15 YT SEARCH PRO</title>
+<style>
+body{background:#000;color:#fff;font-family:sans-serif;padding:8px;margin:0}
+.box{border:2px solid #0ff;border-radius:12px;padding:10px;background:#111;margin-bottom:10px}
+.btn{width:100%;padding:12px;border-radius:10px;border:none;font-weight:bold;margin:4px 0}
+.y{background:#ff0;color:#000}.c{background:#0ff;color:#000}.p{background:#f0f;color:#fff}.r{background:#f00;color:#fff}
+audio,iframe{width:100%;margin:8px 0;border-radius:10px}
+.swrap{display:flex;overflow-x:auto;gap:4px;padding:8px;background:#000;border-radius:10px}
+.col{min-width:46px;background:#222;border-radius:8px;padding:5px;text-align:center;border:1px solid #444}
+.col input{width:28px;height:80px}.col b{font-size:10px;color:#ff0;display:block}.col span{font-size:11px;font-weight:bold}
+.pres{display:flex;gap:4px;margin-top:8px}.pres button{flex:1;padding:10px 2px;border-radius:8px;border:none;font-weight:bold;font-size:11px}
+canvas{width:100%;height:80px;background:#000;border-radius:8px;border:1px solid #333}
+.inp{width:100%;padding:12px;border-radius:10px;border:2px solid #0ff;background:#000;color:#0f0;margin:5px 0;font-weight:bold}
+.ytlist{max-height:300px;overflow:auto}
+.ytitem{background:#222;border:1px solid #444;padding:8px;border-radius:8px;margin:4px 0;display:flex;gap:8px}
+.ytitem img{width:80px;height:45px;border-radius:5px}
+</style></head><body>
+<div class="box">
+<canvas id="can"></canvas>
+<button class="btn y" onclick="document.getElementById('f').click()">+ TAMBAH LAGU</button>
+<input type="file" id="f" accept="audio/*" multiple style="display:none">
+<audio id="a" controls></audio>
+
+<input class="inp" id="ytsearch" placeholder="🔍 Cari Lagu di YouTube bos... contoh: anak wedok">
+<button class="btn r" onclick="searchYT()">🔍 SEARCH YOUTUBE</button>
+<div id="ytplayer"></div>
+<div id="ytresult" class="ytlist"></div>
+
+<input class="inp" id="yt" placeholder="Paste Link MP3 langsung (bukan YT)">
+<button class="btn p" onclick="loadYT()">▶️ PLAY LINK MP3</button>
+<button class="btn c">EQ 15 BAND PRO ON ✅ - YT SEARCH</button>
+<div id="pl"></div>
+<div style="color:#0f0;text-align:center;font-weight:bold" id="cnt">0 lagu</div>
+</div>
+
+<div class="box">
+<div class="swrap" id="eq"></div>
+<div class="pres">
+<button onclick="P(0)" style="background:#555;color:#fff">FLAT</button>
+<button onclick="P(1)" style="background:#0ff">BASS</button>
+<button onclick="P(2)" style="background:#ff0">VOCAL</button>
+<button onclick="P(3)" style="background:#f0f;color:#fff">TREBLE</button>
+<button onclick="P(4)" style="background:#0f0">SMILE</button>
+</div>
+</div>
+
+<script>
+let F=[25,40,63,100,160,250,400,630,1000,1600,2500,4000,6300,10000,16000];
+let A=document.getElementById('a'),C,FL=[],FS=[],AN,can=document.getElementById('can'),x=can.getContext('2d');
+let PS=[[0,0,0,0,0,0,0],[6,5,4,3,1,0,0,0,0,0,0,0,0,0,-1],[-1,-1,0,0,1,2,3,4,4,3,2,1,0,0,0],[-2,-1,0,0,0,0,0,0,0,1,2,3,4,5,6],[5,4,2,0,-1,-2,-2,-1,0,0,1,2,3,4,5]];
+function I(){
+if(C) return;
+C=new(window.AudioContext||window.webkitAudioContext)();
+let S=C.createMediaElementSource(A),Pr=S;
+FL=[];AN=C.createAnalyser();AN.fftSize=256;
+F.forEach((f,i)=>{
+let B=C.createBiquadFilter();
+if(i==0){B.type='lowshelf';B.frequency.value=f}
+else if(i==14){B.type='highshelf';B.frequency.value=f}
+else{B.type='peaking';B.frequency.value=f;B.Q.value=1}
+B.gain.value=0;Pr.connect(B);Pr=B;FL.push(B);
+});
+Pr.connect(AN);AN.connect(C.destination);
+draw();
+}
+function draw(){
+if(!AN) return;
+let D=new Uint8Array(AN.frequencyBinCount);
+AN.getByteFrequencyData(D);
+x.fillStyle='#000';x.fillRect(0,0,can.width,can.height);
+let w=can.width/60;
+for(let i=0;i<60;i++){let h=D[i]/255*can.height;x.fillStyle=`hsl(${120+h},100%,50%)`;x.fillRect(i*w,can.height-h,w-1,h);}
+requestAnimationFrame(draw);
+}
+let E=document.getElementById('eq');
+F.forEach((f,i)=>{
+let L=f>=1000?(f/1000)+'K':f;
+let D=document.createElement('div');D.className='col';
+D.innerHTML='<span id="v'+i+'">0</span><br><input type="range" id="s'+i+'" min="-12" max="12" value="0" oninput="G('+i+',this.value)"><br><b>'+L+'</b>';
+E.appendChild(D);
+});
+function G(i,v){
+if(!C) I();
+FL[i].gain.value=parseInt(v);
+let el=document.getElementById('v'+i);el.textContent=v>0?'+'+v:v;
+el.style.color=v>0?'#0f0':v<0?'#f00':'#fff';
+if(C.state=='suspended') C.resume();
+}
+function P(k){PS[k].forEach((v,i)=>{document.getElementById('s'+i).value=v;G(i,v);});}
+document.getElementById('f').addEventListener('change',e=>{
+FS=[...FS,...Array.from(e.target.files)];upd();if(FS.length) L(0);
+});
+function upd(){
+let H='';FS.forEach((f,i)=>{H+='<div style="background:#0ff;color:#000;padding:7px;border-radius:8px;margin:3px 0;font-weight:bold;display:flex;justify-content:space-between" onclick="L('+i+')"><span>'+(i+1)+'.'+f.name.slice(0,20)+'</span><span style="color:red" onclick="event.stopPropagation();FS.splice('+i+',1);upd()"> X</span></div>';});
+document.getElementById('pl').innerHTML=H;
+document.getElementById('cnt').textContent=FS.length+' lagu';
+}
+function L(i){let f=FS[i];A.src=URL.createObjectURL(f);A.play();I();if(C.state=='suspended') C.resume();}
+function loadYT(){
+let u=document.getElementById('yt').value.trim();
+if(!u) return;
+A.src=u;A.play();I();
+}
+function searchYT(){
+let q=document.getElementById('ytsearch').value.trim();
+if(!q) return alert('Ketik judul lagu dulu bos!');
+let id='ytplayer';
+document.getElementById('ytplayer').innerHTML='<iframe height="200" src="https://www.youtube.com/embed?listType=search&list='+encodeURIComponent(q)+'" frameborder="0" allowfullscreen></iframe><div style="color:#ff0;font-size:11px;text-align:center;margin-top:5px">▶️ Hasil YouTube untuk: '+q+' - Klik video untuk play bos! (EQ tidak bisa filter audio YT karena aturan YouTube, tapi bisa tetap dengarkan)</div>';
+document.getElementById('ytresult').innerHTML='<div style="background:#222;padding:10px;border-radius:8px;text-align:center"><a href="https://www.youtube.com/results?search_query='+encodeURIComponent(q)+'" target="_blank" style="color:#0ff;font-weight:bold">🔗 Buka Hasil Pencarian Lengkap di YouTube (tab baru)</a><br><br><div style="color:#aaa;font-size:11px">Tips bos: Kalau mau EQ berfungsi, download dulu MP3 nya pakai y2mate.is terus upload lewat + TAMBAH LAGU. Kalau cuma mau dengerin langsung, pakai player YT di atas.</div></div>';
+}
+can.width=300;can.height=80;
+A.addEventListener('play',()=>{I();if(C.state=='suspended') C.resume();});
+</script></body></html>
