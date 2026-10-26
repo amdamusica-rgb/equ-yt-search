@@ -1,114 +1,133 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EQ 15 YT SEARCH PRO</title>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>EQ 15 BAND + YT V3 - AMDAMUSICA</title>
 <style>
-body{background:#000;color:#fff;font-family:sans-serif;padding:8px;margin:0}
-.box{border:2px solid #0ff;border-radius:12px;padding:10px;background:#111;margin-bottom:10px}
-.btn{width:100%;padding:12px;border-radius:10px;border:none;font-weight:bold;margin:4px 0}
-.y{background:#ff0;color:#000}.c{background:#0ff;color:#000}.p{background:#f0f;color:#fff}.r{background:#f00;color:#fff}
-audio,iframe{width:100%;margin:8px 0;border-radius:10px}
-.swrap{display:flex;overflow-x:auto;gap:4px;padding:8px;background:#000;border-radius:10px}
-.col{min-width:46px;background:#222;border-radius:8px;padding:5px;text-align:center;border:1px solid #444}
-.col input{width:28px;height:80px}.col b{font-size:10px;color:#ff0;display:block}.col span{font-size:11px;font-weight:bold}
-.pres{display:flex;gap:4px;margin-top:8px}.pres button{flex:1;padding:10px 2px;border-radius:8px;border:none;font-weight:bold;font-size:11px}
-canvas{width:100%;height:80px;background:#000;border-radius:8px;border:1px solid #333}
-.inp{width:100%;padding:12px;border-radius:10px;border:2px solid #0ff;background:#000;color:#0f0;margin:5px 0;font-weight:bold}
-.ytlist{max-height:300px;overflow:auto}
-.ytitem{background:#222;border:1px solid #444;padding:8px;border-radius:8px;margin:4px 0;display:flex;gap:8px}
-.ytitem img{width:80px;height:45px;border-radius:5px}
-</style></head><body>
-<div class="box">
-<canvas id="can"></canvas>
-<button class="btn y" onclick="document.getElementById('f').click()">+ TAMBAH LAGU</button>
-<input type="file" id="f" accept="audio/*" multiple style="display:none">
-<audio id="a" controls></audio>
-
-<input class="inp" id="ytsearch" placeholder="🔍 Cari Lagu di YouTube bos... contoh: anak wedok">
-<button class="btn r" onclick="searchYT()">🔍 SEARCH YOUTUBE</button>
-<div id="ytplayer"></div>
-<div id="ytresult" class="ytlist"></div>
-
-<input class="inp" id="yt" placeholder="Paste Link MP3 langsung (bukan YT)">
-<button class="btn p" onclick="loadYT()">▶️ PLAY LINK MP3</button>
-<button class="btn c">EQ 15 BAND PRO ON ✅ - YT SEARCH</button>
-<div id="pl"></div>
-<div style="color:#0f0;text-align:center;font-weight:bold" id="cnt">0 lagu</div>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0a;color:#fff;font-family:system-ui,sans-serif;padding:8px}
+.container{max-width:900px;margin:0 auto;background:#111;border:2px solid #444;border-radius:16px;padding:10px}
+h1{text-align:center;color:#ff0;font-size:18px;margin:6px 0}
+.search-box{display:flex;gap:6px;margin:8px 0}
+.search-box input{flex:1;padding:12px;border-radius:10px;border:2px solid #555;background:#222;color:#fff;font-size:14px}
+.btn{padding:12px 14px;border-radius:10px;border:none;font-weight:900;cursor:pointer}
+.btn-search{background:#f00;color:#fff}
+.btn-file{background:#c8b400;color:#000;width:100%;margin:8px 0;font-size:16px;padding:14px}
+#ytResults{max-height:260px;overflow-y:auto;background:#1a1a1a;border-radius:10px;margin:8px 0;display:none}
+.yt-item{display:flex;gap:8px;padding:8px;border-bottom:1px solid #333;cursor:pointer}
+.yt-item:hover{background:#2a2a2a}
+.yt-item img{width:90px;height:50px;object-fit:cover;border-radius:6px}
+.yt-item .info{flex:1;font-size:12px}
+.yt-item .title{font-weight:700;color:#fff;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.yt-item .channel{color:#aaa;font-size:11px}
+canvas{width:100%;height:120px;background:#000;border-radius:10px;margin:8px 0;border:1px solid #333}
+.player{width:100%;margin:6px 0}
+.playlist{max-height:150px;overflow-y:auto;background:#1e1e1e;border-radius:8px;margin:6px 0}
+.playlist-item{padding:8px 10px;border-bottom:1px solid #333;cursor:pointer;font-size:13px;display:flex;justify-content:space-between}
+.playlist-item.active{background:#333;color:#ff0}
+.eq-grid{display:grid;grid-template-columns:repeat(15,1fr);gap:3px;margin:8px 0}
+.eq-band{background:#1a1a1a;border-radius:8px;padding:4px 2px;text-align:center;border:1px solid #333}
+.eq-band input{writing-mode:bt-lr;-webkit-appearance:slider-vertical;width:100%;height:90px}
+.eq-band label{font-size:9px;display:block;margin-top:2px;color:#aaa}
+.eq-band .val{font-size:10px;color:#ff0;font-weight:700}
+.presets{display:flex;gap:4px;flex-wrap:wrap;margin:6px 0}
+.presets button{flex:1;min-width:60px;padding:8px;border-radius:8px;border:none;font-weight:800;font-size:12px;cursor:pointer}
+.status{font-size:11px;color:#0f0;text-align:center;margin:4px 0;min-height:16px}
+.loading{color:#ff0}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🎛️ EQ 15 BAND PRO + YT INSIDE 🎛️</h1>
+<div class="search-box">
+<input id="ytQuery" placeholder="🔍 Cari lagu YouTube... contoh: dj anak wedok">
+<button class="btn btn-search" onclick="searchYT()">SEARCH</button>
 </div>
-
-<div class="box">
-<div class="swrap" id="eq"></div>
-<div class="pres">
-<button onclick="P(0)" style="background:#555;color:#fff">FLAT</button>
-<button onclick="P(1)" style="background:#0ff">BASS</button>
-<button onclick="P(2)" style="background:#ff0">VOCAL</button>
-<button onclick="P(3)" style="background:#f0f;color:#fff">TREBLE</button>
-<button onclick="P(4)" style="background:#0f0">SMILE</button>
+<div id="status" class="status">Siap bos! Cari lagu YouTube atau upload MP3 lokal</div>
+<div id="ytResults"></div>
+<button class="btn btn-file" onclick="document.getElementById('fileInput').click()">+ TAMBAH LAGU MP3 LOKAL</button>
+<input type="file" id="fileInput" accept="audio/*" multiple hidden>
+<canvas id="spectrum"></canvas>
+<audio id="audio" class="player" controls crossorigin="anonymous"></audio>
+<div id="playlist" class="playlist"></div>
+<div class="eq-grid" id="eqGrid"></div>
+<div class="presets">
+<button style="background:#444;color:#fff" onclick="setPreset('flat')">FLAT</button>
+<button style="background:#0aa;color:#000" onclick="setPreset('bass')">BASS</button>
+<button style="background:#cc0;color:#000" onclick="setPreset('vocal')">VOCAL</button>
+<button style="background:#a0a;color:#000" onclick="setPreset('treble')">TREBLE</button>
+<button style="background:#0a0;color:#000" onclick="setPreset('smile')">SMILE</button>
+<button style="background:#a00;color:#fff" onclick="resetEQ()">RESET</button>
 </div>
+<div style="text-align:center;font-size:10px;color:#666;margin-top:6px">25 40 63 100 160 250 400 630 1K 1.6K 2.5K 4K 6.3K 10K 16K Hz - V3 PRO MAX</div>
 </div>
-
 <script>
-let F=[25,40,63,100,160,250,400,630,1000,1600,2500,4000,6300,10000,16000];
-let A=document.getElementById('a'),C,FL=[],FS=[],AN,can=document.getElementById('can'),x=can.getContext('2d');
-let PS=[[0,0,0,0,0,0,0],[6,5,4,3,1,0,0,0,0,0,0,0,0,0,-1],[-1,-1,0,0,1,2,3,4,4,3,2,1,0,0,0],[-2,-1,0,0,0,0,0,0,0,1,2,3,4,5,6],[5,4,2,0,-1,-2,-2,-1,0,0,1,2,3,4,5]];
-function I(){
-if(C) return;
-C=new(window.AudioContext||window.webkitAudioContext)();
-let S=C.createMediaElementSource(A),Pr=S;
-FL=[];AN=C.createAnalyser();AN.fftSize=256;
-F.forEach((f,i)=>{
-let B=C.createBiquadFilter();
-if(i==0){B.type='lowshelf';B.frequency.value=f}
-else if(i==14){B.type='highshelf';B.frequency.value=f}
-else{B.type='peaking';B.frequency.value=f;B.Q.value=1}
-B.gain.value=0;Pr.connect(B);Pr=B;FL.push(B);
-});
-Pr.connect(AN);AN.connect(C.destination);
-draw();
+const FREQS=[25,40,63,100,160,250,400,630,1000,1600,2500,4000,6300,10000,16000];
+let audioCtx,filters=[],analyser,srcNode,gainNode;
+let playlist=[];let currentIdx=-1;
+const audio=document.getElementById('audio');
+const statusEl=document.getElementById('status');
+const resultsEl=document.getElementById('ytResults');
+const playlistEl=document.getElementById('playlist');
+function initAudio(){
+ if(audioCtx) return;
+ audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+ filters=FREQS.map(f=>{
+  const fl=audioCtx.createBiquadFilter();fl.type='peaking';fl.frequency.value=f;fl.Q.value=1;fl.gain.value=0;return fl;
+ });
+ analyser=audioCtx.createAnalyser();analyser.fftSize=256;
+ gainNode=audioCtx.createGain();
+ srcNode=audioCtx.createMediaElementSource(audio);
+ let chain=srcNode;filters.forEach(fl=>{chain.connect(fl);chain=fl;});
+ chain.connect(analyser);analyser.connect(gainNode);gainNode.connect(audioCtx.destination);
+ drawSpectrum();
 }
-function draw(){
-if(!AN) return;
-let D=new Uint8Array(AN.frequencyBinCount);
-AN.getByteFrequencyData(D);
-x.fillStyle='#000';x.fillRect(0,0,can.width,can.height);
-let w=can.width/60;
-for(let i=0;i<60;i++){let h=D[i]/255*can.height;x.fillStyle=`hsl(${120+h},100%,50%)`;x.fillRect(i*w,can.height-h,w-1,h);}
-requestAnimationFrame(draw);
+function drawSpectrum(){
+ const canvas=document.getElementById('spectrum');const ctx=canvas.getContext('2d');
+ canvas.width=canvas.offsetWidth*2;canvas.height=240;
+ function loop(){requestAnimationFrame(loop);if(!analyser) return;const data=new Uint8Array(analyser.frequencyBinCount);analyser.getByteFrequencyData(data);ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);const barW=canvas.width/data.length*2.5;let x=0;for(let i=0;i<data.length;i++){const h=data[i]/255*canvas.height;const hue=i/data.length*280;ctx.fillStyle=`hsl(${hue},100%,50%)`;ctx.fillRect(x,canvas.height-h,barW,h);x+=barW+1;}}loop();
 }
-let E=document.getElementById('eq');
-F.forEach((f,i)=>{
-let L=f>=1000?(f/1000)+'K':f;
-let D=document.createElement('div');D.className='col';
-D.innerHTML='<span id="v'+i+'">0</span><br><input type="range" id="s'+i+'" min="-12" max="12" value="0" oninput="G('+i+',this.value)"><br><b>'+L+'</b>';
-E.appendChild(D);
-});
-function G(i,v){
-if(!C) I();
-FL[i].gain.value=parseInt(v);
-let el=document.getElementById('v'+i);el.textContent=v>0?'+'+v:v;
-el.style.color=v>0?'#0f0':v<0?'#f00':'#fff';
-if(C.state=='suspended') C.resume();
+function createEQ(){
+ const grid=document.getElementById('eqGrid');
+ FREQS.forEach((f,i)=>{const div=document.createElement('div');div.className='eq-band';div.innerHTML=`<input type="range" min="-12" max="12" value="0" step="1" data-i="${i}" oninput="setGain(${i},this.value)"><div class="val" id="val-${i}">0dB</div><label>${f>=1000? (f/1000)+'K':f}</label>`;grid.appendChild(div);});
+}createEQ();
+function setGain(i,v){if(!audioCtx) initAudio();if(audioCtx.state==='suspended') audioCtx.resume();filters[i].gain.value=parseFloat(v);document.getElementById(`val-${i}`).textContent=v+'dB';}
+function setPreset(name){const presets={flat:Array(15).fill(0),bass:[6,6,5,4,2,0,0,0,0,0,0],vocal:[0,0,0,0,0,0,2,4,5,4,2,0,0,0,0],treble:[0,0,0,0,0,2,4,5,6,6,6],smile:[5,4,3,0,0,0,0,0,2,4,5]};const p=presets[name];p.forEach((v,i)=>{const inp=document.querySelector(`input[data-i="${i}"]`);if(inp){inp.value=v;setGain(i,v);}});}
+function resetEQ(){setPreset('flat');}
+function addToPlaylist(name,url,isYT=false){playlist.push({name,url,isYT});renderPlaylist();if(playlist.length===1) playIdx(0);}
+function renderPlaylist(){playlistEl.innerHTML='';playlist.forEach((t,i)=>{const div=document.createElement('div');div.className='playlist-item'+(i===currentIdx?' active':'');div.innerHTML=`<span>${i+1}. ${t.name}</span><span>${t.isYT?'YT':''}</span>`;div.onclick=()=>playIdx(i);playlistEl.appendChild(div);});}
+function playIdx(i){currentIdx=i;const track=playlist[i];initAudio();if(audioCtx.state==='suspended') audioCtx.resume();audio.src=track.url;audio.play();renderPlaylist();statusEl.textContent='Playing: '+track.name;}
+document.getElementById('fileInput').onchange=e=>{for(const f of e.target.files){const url=URL.createObjectURL(f);addToPlaylist(f.name,url,false);}};
+async function searchYT(){
+ const q=document.getElementById('ytQuery').value.trim();if(!q){statusEl.textContent='Ketik judul dulu bos!';return;}
+ statusEl.textContent='🔍 Searching: '+q+' ...';statusEl.className='status loading';resultsEl.style.display='block';resultsEl.innerHTML='<div style="padding:12px;text-align:center">Loading bos...</div>';
+ try{
+  const bases=['https://pipedapi.kavin.rocks','https://api.piped.privacy.com.de','https://pipedapi.adminforge.de'];let data=null;
+  for(const base of bases){try{const r=await fetch(`${base}/search?q=${encodeURIComponent(q)}`);if(r.ok){data=await r.json();break;}}catch(e){continue;}}
+  if(!data||!data.items) throw new Error('Gagal');
+  const videos=data.items.filter(i=>i.type==='stream').slice(0,15);
+  resultsEl.innerHTML='';videos.forEach(v=>{
+   const vidId=v.url.split('/').pop();const thumb=v.thumbnail||`https://i.ytimg.com/vi/${vidId}/mqdefault.jpg`;
+   const div=document.createElement('div');div.className='yt-item';
+   div.innerHTML=`<img src="${thumb}"><div class="info"><div class="title">${v.title}</div><div class="channel">${v.uploaderName||''} • ${v.duration||''}</div></div>`;
+   div.onclick=()=>playYT(vidId,v.title);resultsEl.appendChild(div);
+  });
+  statusEl.textContent=`Dapat ${videos.length} lagu, klik untuk play + EQ!`;statusEl.className='status';
+ }catch(err){statusEl.textContent='Search error bos, coba lagi';resultsEl.innerHTML=`<div style="padding:10px;color:#f88">Error: ${err.message}</div>`;}
 }
-function P(k){PS[k].forEach((v,i)=>{document.getElementById('s'+i).value=v;G(i,v);});}
-document.getElementById('f').addEventListener('change',e=>{
-FS=[...FS,...Array.from(e.target.files)];upd();if(FS.length) L(0);
-});
-function upd(){
-let H='';FS.forEach((f,i)=>{H+='<div style="background:#0ff;color:#000;padding:7px;border-radius:8px;margin:3px 0;font-weight:bold;display:flex;justify-content:space-between" onclick="L('+i+')"><span>'+(i+1)+'.'+f.name.slice(0,20)+'</span><span style="color:red" onclick="event.stopPropagation();FS.splice('+i+',1);upd()"> X</span></div>';});
-document.getElementById('pl').innerHTML=H;
-document.getElementById('cnt').textContent=FS.length+' lagu';
+async function playYT(videoId,title){
+ statusEl.textContent='⏳ Ambil audio: '+title+' ...';statusEl.className='status loading';
+ try{
+  const bases=['https://pipedapi.kavin.rocks','https://api.piped.privacy.com.de','https://pipedapi.adminforge.de'];let sd=null;
+  for(const base of bases){try{const r=await fetch(`${base}/streams/${videoId}`);if(r.ok){sd=await r.json();if(sd.audioStreams) break;}}catch(e){continue;}}
+  if(!sd||!sd.audioStreams) throw new Error('Audio tidak ada');
+  let best=sd.audioStreams.sort((a,b)=>(b.bitrate||0)-(a.bitrate||0))[0];
+  const audioUrl=best.url;addToPlaylist(title,audioUrl,true);playIdx(playlist.length-1);resultsEl.style.display='none';statusEl.textContent='Playing YT + EQ: '+title;statusEl.className='status';
+ }catch(err){statusEl.textContent='Gagal play: '+err.message;}
 }
-function L(i){let f=FS[i];A.src=URL.createObjectURL(f);A.play();I();if(C.state=='suspended') C.resume();}
-function loadYT(){
-let u=document.getElementById('yt').value.trim();
-if(!u) return;
-A.src=u;A.play();I();
-}
-function searchYT(){
-let q=document.getElementById('ytsearch').value.trim();
-if(!q) return alert('Ketik judul lagu dulu bos!');
-let id='ytplayer';
-document.getElementById('ytplayer').innerHTML='<iframe height="200" src="https://www.youtube.com/embed?listType=search&list='+encodeURIComponent(q)+'" frameborder="0" allowfullscreen></iframe><div style="color:#ff0;font-size:11px;text-align:center;margin-top:5px">▶️ Hasil YouTube untuk: '+q+' - Klik video untuk play bos! (EQ tidak bisa filter audio YT karena aturan YouTube, tapi bisa tetap dengarkan)</div>';
-document.getElementById('ytresult').innerHTML='<div style="background:#222;padding:10px;border-radius:8px;text-align:center"><a href="https://www.youtube.com/results?search_query='+encodeURIComponent(q)+'" target="_blank" style="color:#0ff;font-weight:bold">🔗 Buka Hasil Pencarian Lengkap di YouTube (tab baru)</a><br><br><div style="color:#aaa;font-size:11px">Tips bos: Kalau mau EQ berfungsi, download dulu MP3 nya pakai y2mate.is terus upload lewat + TAMBAH LAGU. Kalau cuma mau dengerin langsung, pakai player YT di atas.</div></div>';
-}
-can.width=300;can.height=80;
-A.addEventListener('play',()=>{I();if(C.state=='suspended') C.resume();});
-</script></body></html>
+document.getElementById('ytQuery').addEventListener('keydown',e=>{if(e.key==='Enter') searchYT();});
+document.body.addEventListener('click',()=>{if(!audioCtx) initAudio();},{once:true});
+</script>
+</body>
+</html>
